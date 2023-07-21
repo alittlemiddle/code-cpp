@@ -1,0 +1,45 @@
+#include <bits/stdc++.h>
+//#pragma GCC optimize("Ofast,unroll-loops")
+//#pragma GCC target("avx2,popcnt,lzcnt,abm,bmi,bmi2,fma,tune=native")
+#define el '\n'
+#define fi first
+#define sc second
+using namespace std;
+using ll=long long;
+using ull=unsigned long long;
+using ld=long double;
+const int mod=1e9+7;
+const int N=1e5+11;
+mt19937 rd(chrono::steady_clock::now().time_since_epoch().count());
+ll ran(ll left, ll right)
+{
+    return left+rd()%(right-left+1);
+}
+void maketest()
+{
+    ofstream inp("vcl"".inp");
+    // code sinh test di thang l ran(l, r): rand tu l den r
+    int x=ran(1, 20);
+    inp << x << ' ' << x+ran(1, 100);
+}
+const int tests=1000;
+
+int main()
+{
+    srand(time(0));
+    for(int i=1; i<=tests; i++)
+    {
+        maketest();
+        system("vcl""_trau.exe");
+        system("vcl"".exe");
+        if(system("fc ""vcl"".out ""vcl"".ans")!=0)
+        {
+            cout << "TEST" << i << ":WRONG!\n";
+            return 0;
+        }
+        cout << "TEST" << i << ":CORRECT!\n";
+    }
+}
+//if(time == 0.9) time=0, No time limit
+//if(memory < memory'code) memory += memory'code, No memory limit
+//if(wrong_answer==true) wrong_answer=true, AC.
