@@ -621,3 +621,219 @@ signed main()
         sol();
     }
 }
+/////////////////////////////////////////////////////////////
+#include <bits/stdc++.h>
+#define int long long
+#define ii pair<int, int>
+#define nd second
+#define st first
+#define endl "\n"
+#define all(v) v.begin(), v.end()
+using namespace std;
+const int MAXN = 1e5 + 5;
+const int delta = 1e9;
+const int LOG = 30;
+struct Q{
+    int type, a, b;
+} query[MAXN];
+int test;
+namespace sub2{
+    struct Trie{
+        Trie *c[2];
+        int val, cnt;
+    };
+    struct Trie *getNode(void){
+        Trie *a = new Trie();
+        a->c[0] = a->c[1] = NULL;
+        a->val = 0;
+        a->cnt = 0;
+        return a;
+    }
+    Trie *root = getNode();
+    void add(int val){
+        Trie *x = root;
+        for (int i = LOG; i >= 0; i--){
+            int key = val >> i & 1;
+            if (x->c[key] == NULL) x->c[key] = getNode();
+            x = x->c[key];
+            x->val += val;
+            x->cnt++;
+        }
+    }
+    int get(int val){
+        Trie *x = root;
+        int ans = 0;
+        for (int i = LOG; i >= 0; i--){
+            int key = val >> i & 1;
+            if (key){
+                if (x->c[!key]){
+                    ans += x->c[!key]->val - x->c[!key]->cnt * delta;
+                }
+            }
+            if (x->c[key]) x = x->c[key];
+            else return ans;
+            if (i == 0) ans += x->val - delta * x->cnt;
+        }
+        return ans;
+    }
+    int getcnt(int val){
+        int w = 0;
+        Trie *x = root;
+        int ans = 0;
+        for (int i = LOG; i >= 0; i--){
+            if (x->c[0]){
+                if (x->c[0]->cnt >= val) x = x->c[0];
+                else{
+                    w += (1 << i);
+                    ans += x->c[0]->val - x->c[0]->cnt * delta;
+                    val -= x->c[0]->cnt;
+                    if (x->c[1]) x = x->c[1];
+                    else return ans;
+                }
+            }
+            else{
+                w += (1 << i);
+                if (x->c[1]) x = x->c[1];
+                else return ans;
+            }
+            if (i == 0 && val > 0) ans += w * val - val * delta;
+        }
+        return ans;
+    }
+    int solve(int val){
+        Trie *x = root;
+        int ans = 0;
+        for (int i = LOG; i >= 0; i--){
+            if (x->c[0]){
+                if (x->c[0]->cnt >= val) x = x->c[0];
+                else{
+                    ans += (1 << i);
+                    val -= x->c[0]->cnt;
+                    if (x->c[1]) x = x->c[1];
+                }
+            }
+            else{
+                ans += (1 << i);
+                x = x->c[1];
+            }
+        }
+        return ans;
+    }
+    void solve(){
+        for (int i = 1; i <= test; i++){
+            auto [t, a, b] = query[i];
+            if (t == 1){
+                a += delta;
+                add(a);
+            }
+            else if (t == 2){
+                a += delta;
+                b += delta;
+                cout << get(b) - get(a - 1) << endl;
+            }
+            else{
+                int v1 = solve(a), v2 = solve(b);
+                cout << getcnt(b) - getcnt(a - 1) << endl;
+                add(v1 + 1);
+                add(v2 - 1);
+            }
+        }
+    }
+}
+signed main(){
+    ios_base::sync_with_stdio(false);
+    cin.tie(0);
+    cin >> test;
+    for (int i = 1; i <= test; i++){
+        cin >> query[i].type >> query[i].a;
+        if (query[i].type > 1) cin >> query[i].b;
+    } 
+    sub2::solve();
+}
+/////////////////////////////////////////////////////////////
+#include <bits/stdc++.h>
+#define el '\n'
+#define fi first
+#define sc second
+#define pii pair<int, int>
+#define all(v) v.begin(), v.end()
+#define int ll
+using namespace std;
+using ll=long long;
+using ull=unsigned long long;
+using ld=long double;
+const int mod=1e9+7;
+const int N=1e5+11;
+int n, m;
+vector<pii> adj[N];
+vector<int> trace(N, -1);
+vector<int> dis(N, 1e18);
+vector<bool> opt(N, 0);
+struct cmp
+{
+    bool operator() (pii a, pii b)
+    {
+        return a.sc > b.sc;
+    }
+};
+void dijktra(int n, int s)
+{
+    dis[s]=0;
+    priority_queue<pii, vector<pii>, cmp> q;
+    q.push({s, 0});
+    while(!q.empty())
+    {
+        int u=q.top().fi;
+        q.pop();
+        if(opt[u]==1) continue;
+        opt[u]=1;
+        for(auto x:adj[u])
+        {
+            if(dis[x.fi]>dis[u]+x.sc)
+            {
+                dis[x.fi]=dis[u]+x.sc;
+                q.push({x.fi, dis[x.fi]});
+                trace[x.fi]=u;
+            }
+        }
+    }
+
+}
+void sol()
+{
+    cin >> n >> m;
+    while(m--)
+    {
+        int x, y, z;
+        cin >> x >> y >> z;
+        adj[x].push_back({y, z});
+        adj[y].push_back({x, z});
+    }
+    dijktra(n, 1);
+    vector<int> path;
+    if(trace[n]==-1 && n!=1)
+    {
+        cout << -1;
+        return;
+    }
+    while(n!=-1)
+    {
+        path.push_back(n);
+        n=trace[n];
+    }
+    reverse(all(path));
+    for(auto x:path) cout << x << ' ';
+}
+signed main()
+{
+//    freopen("task.INP", "r", stdin);
+//    freopen("task.OUT", "w", stdout);
+    ios_base::sync_with_stdio(0);
+    cin.tie(0);
+    int t=1;
+    //cin >> t;
+    while(t--)
+    {
+        sol();
+    }
+}
