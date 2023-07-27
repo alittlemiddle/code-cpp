@@ -837,3 +837,34 @@ signed main()
         sol();
     }
 }
+/////////////////////////////////////////////////////////////
+const int mod=1e9+7;
+const int N=1e6+11;
+const int base=31;
+ll hashs[N], hasht[N], po[N], ans, q;
+string s;
+ll gethashs(int i, int j)
+{
+    return (hashs[j] - hashs[i - 1] * po[j - i + 1] + mod * mod) % mod;
+}
+void sol()
+{
+    cin >> s >> q;
+    int n=s.length();
+    s=" "+s;
+    hashs[0]=0;
+    po[0]=1;
+    for(int i=1; i<=n; i++)
+    {
+        hashs[i]=(hashs[i-1]*base+ll(s[i]-'a'+1))%mod;
+        po[i]=(po[i-1]*base)%mod;
+    }
+    while(q--)
+    {
+        int a, b, x, y;
+        cin >> a >> b >> x >> y;
+        if(gethashs(a, b)==gethashs(x, y)) cout << "YES" << el;
+        else cout << "NO" << el;
+    }
+
+}
