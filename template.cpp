@@ -1,4 +1,6 @@
-#include <bits/stdc++.h>
+#include<bits/stdc++.h>
+#include<ext/pb_ds/assoc_container.hpp>
+#include<ext/pb_ds/tree_policy.hpp>
 #define el '\n'
 #define fi first
 #define sc second
@@ -6,6 +8,8 @@
 #define pii pair<int, int>
 #define all(v) v.begin(), v.end()
 using namespace std;
+#define ordered_set tree<int,null_type,less<int>,rb_tree_tag,tree_order_statistics_node_update>
+using namespace __gnu_pbds;
 using ll=long long;
 using ull=unsigned long long;
 using ld=long double;
